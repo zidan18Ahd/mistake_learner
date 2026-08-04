@@ -1,4 +1,4 @@
-arkdown
+
 # Mistake Learner – Personal AI Code Reviewer
 
 A CLI tool that does not just lint your code, but learns your personal reasoning blind spots over time.
