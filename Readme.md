@@ -151,7 +151,7 @@ mistake_map.html
 ```
 
 Open the HTML file in your browser to explore your reasoning graph.
-
+![Mistake Clusters](assets/mistake_clusters.png)
 ---
 
 # Example Memory
