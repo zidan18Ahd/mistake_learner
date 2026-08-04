@@ -1,91 +1,237 @@
-
 # Mistake Learner – Personal AI Code Reviewer
 
-A CLI tool that does not just lint your code, but learns your personal reasoning blind spots over time.
+A CLI tool that goes beyond traditional code linting by learning your personal reasoning mistakes over time.
 
-Instead of saying "you missed a parameterized query", it figures out why you made that mistake (for example, "you assumed the input would always be safe") and stores that reasoning in a vector database. Over time, it builds a visual "brain map" of your recurring coding weaknesses.
+Instead of only identifying bugs, it tries to understand *why* you made the mistake. For example, instead of simply reporting an SQL injection vulnerability, it may infer that you assumed user input would always be safe. Each reasoning mistake is stored as a semantic memory, allowing the system to build a long-term profile of your recurring coding blind spots.
 
-## Features
+Over time, these memories form an interactive graph that helps you visualize and understand your personal reasoning patterns.
 
-- 5-Stage LangGraph Pipeline: Evaluates, infers wrong reasoning, infers correct reasoning, finds the divergence point, and builds a memory node.
-- Persistent Memory: Stores every mistake in ChromaDB for long-term learning.
-- Groq Integration: Uses Llama 3.3 70B (fast and free) to reason about your code.
-- Visualization: Generates an interactive HTML graph showing your mistake clusters and semantic similarities.
-- Deduplication: Automatically removes duplicate entries so your graph stays clean.
+---
 
-## Tech Stack
+# Features
+
+- Five-stage LangGraph pipeline for mistake analysis.
+- Infers the incorrect reasoning behind a bug.
+- Infers the correct reasoning that should have been used.
+- Identifies the divergence point between wrong and correct thinking.
+- Stores every reasoning mistake in ChromaDB for long-term memory.
+- Uses Groq's Llama 3.3 70B model for reasoning.
+- Automatically removes duplicate memories.
+- Generates an interactive HTML graph of reasoning clusters.
+
+---
+
+# Pipeline
+
+The project follows a five-stage workflow:
+
+1. Code Evaluation
+   - Compares the incorrect and corrected versions of the code.
+
+2. Wrong Reasoning Inference
+   - Infers the assumption or reasoning that caused the bug.
+
+3. Correct Reasoning Inference
+   - Infers the reasoning that would have prevented the mistake.
+
+4. Divergence Detection
+   - Identifies where the wrong reasoning diverged from the correct reasoning.
+
+5. Memory Creation
+   - Stores the divergence as a semantic memory in ChromaDB.
+
+---
+
+# Tech Stack
 
 - Python 3.11
-- LangGraph (StateGraph)
-- Groq (Llama 3.3 70B)
-- ChromaDB (Vector Database)
-- Pyvis / NetworkX (Graph Visualization)
+- LangGraph
+- Groq API
+- Llama 3.3 70B
+- ChromaDB
+- Pyvis
+- NetworkX
+- Sentence Transformers
 
-## Setup
+---
 
-1. Clone the repository:
-git clone <your-repo-url>
+# Project Structure
+
+```text
+mistake_learner/
+│
+├── main_cli.py
+├── visualize.py
+├── graph.py
+├── state.py
+├── prompts.py
+├── memory.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+├── .env
+└── chroma_data/
+```
+
+---
+
+# Installation
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/mistake_learner.git
 cd mistake_learner
+```
 
-text
+## 2. Create a virtual environment
 
-2. Create a virtual environment:
-- On Windows:
+### Windows
+
+```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
+```
 
-text
-- On macOS / Linux:
+### macOS / Linux
+
+```bash
 python -m venv venv
 source venv/bin/activate
+```
 
-text
+## 3. Install dependencies
 
-3. Install dependencies:
+```bash
 pip install -r requirements.txt
+```
 
-text
+## 4. Create a `.env` file
 
-4. Set up your Groq API key:
-Create a `.env` file in the root directory and add:
-GROQ_API_KEY=your_api_key_here
+Create a file named `.env` in the project root.
 
-text
+```text
+GROQ_API_KEY=your_groq_api_key
+```
 
-## How to Run
+---
 
-1. Analyze a mistake:
+# Running the Project
+
+## Analyze a coding mistake
+
+```bash
 python main_cli.py wrong.py fixed.py
+```
 
-text
-(Where `wrong.py` has the bug and `fixed.py` has the correction.)
+Where:
 
-2. Visualize your mistake clusters:
+- `wrong.py` contains the buggy implementation.
+- `fixed.py` contains the corrected implementation.
+
+After execution, the program:
+
+- Evaluates both versions.
+- Infers your reasoning.
+- Stores the mistake.
+- Prints the total number of stored memories.
+
+---
+
+## Visualize the reasoning graph
+
+```bash
 python visualize.py
+```
 
-text
-This generates `mistake_map.html`. Open it in your browser to see the interactive graph.
+This generates:
 
-3. View total stored mistakes:
-The CLI prints the total count after each run.
+```text
+mistake_map.html
+```
 
-## Example Output
+Open the HTML file in your browser to explore your reasoning graph.
 
-After running several examples, the graph shows clusters such as:
+---
 
-- SQL Injection and Resource Leaks (e.g., assuming the connection auto-closes)
-- Mutable Default Arguments (e.g., assuming default args are re-created each call)
-- Unsafe Eval (e.g., assuming user input is always safe)
+# Example Memory
 
-Hover over any node to see the full divergence point, and drag nodes apart to explore connections.
+Wrong reasoning:
 
-## Requirements File
+> "I assumed user input would always be trusted."
 
-If you do not have a `requirements.txt` yet, generate it by running:
+Correct reasoning:
+
+> "Any external input should be treated as untrusted and parameterized."
+
+Divergence:
+
+> "Assumed trusted input instead of validating user-controlled data."
+
+This semantic memory becomes part of your personal reasoning database.
+
+---
+
+# Example Graph Clusters
+
+After several runs, the graph may naturally organize into clusters such as:
+
+- SQL Injection
+- Resource Management
+- Mutable Default Arguments
+- Unsafe Eval
+- Exception Handling
+- File Handling
+- Concurrency Mistakes
+- State Management
+
+Hover over any node to view the stored reasoning, and drag nodes to explore relationships.
+
+---
+
+# Requirements
+
+If you make changes to dependencies, regenerate the requirements file:
+
+```bash
 pip freeze > requirements.txt
+```
 
-text
+---
 
-## License
+# Git Ignore
 
-MIT
+A recommended `.gitignore`:
+
+```gitignore
+venv/
+__pycache__/
+*.pyc
+
+.env
+
+chroma_data/
+
+mistake_map.html
+
+.idea/
+.vscode/
+```
+
+---
+
+# Future Improvements
+
+- Retrieval-Augmented Memory
+- Similar mistake recommendations
+- Web dashboard
+- Automatic GitHub code review integration
+- Multi-language support
+- Personal learning analytics
+- Timeline of reasoning improvements
+
+---
+
+# License
+
+This project is licensed under the MIT License.
