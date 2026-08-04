@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# ChromaDB database (you don't need to upload the memory)
+chroma_data/
+
+# Secrets (Don't upload your API key!)
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# VS Code settings
+.vscode/
