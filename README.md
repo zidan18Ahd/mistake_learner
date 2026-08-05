@@ -1,4 +1,4 @@
-# Mistake Learner – Personal AI Code Reviewer
+# Mistake Learner 
 
 A CLI tool that goes beyond traditional code linting by learning your personal reasoning mistakes over time.
 
